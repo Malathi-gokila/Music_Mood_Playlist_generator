@@ -48,18 +48,30 @@ It integrates:
 To set up and run the project on your system, follow these steps carefully:
 
 ```bash
-# 1️⃣ Clone the Repository
+# 1️⃣ Install Apache Kafka and Apache Spark
+# -----------------------------------------
+# These two frameworks are required before running the project.
+
+# 🔸 Download and install Apache Kafka:
+# Visit: https://kafka.apache.org/downloads
+# Extract and add the /bin directory to your system PATH.
+
+# 🔸 Download and install Apache Spark:
+# Visit: https://spark.apache.org/downloads.html
+# Extract and set SPARK_HOME in your environment variables.
+# Example (Windows):
+# setx SPARK_HOME "C:\spark\spark-3.5.0-bin-hadoop3"
+# Add %SPARK_HOME%\bin to your PATH.
+
+# Verify installations:
+kafka-topics --version
+spark-shell --version
+
+# 2️⃣ Clone the Repository
 git clone https://github.com/yourusername/music-mood-playlist-generator.git
 cd music-mood-playlist-generator
 
-# 2️⃣ (Optional) Create a Virtual Environment
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# macOS/Linux
-source venv/bin/activate
-
-# 3️⃣ Install Required Libraries
+# 3️⃣ Install Python Libraries
 pip install deepface opencv-python streamlit kafka-python pyspark requests
 
 # 4️⃣ Start Apache Kafka (in two terminals)
