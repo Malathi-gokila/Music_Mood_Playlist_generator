@@ -1,6 +1,3 @@
-# spark_playlist_aggregate_learning.py
-# ML Model learns GLOBAL mood-genre patterns (no user tracking needed)
-
 import json
 import os
 import random
@@ -17,9 +14,7 @@ from pyspark.ml import Pipeline
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
 
-# -----------------------
 # Configuration
-# -----------------------
 KAFKA_BOOTSTRAP = "localhost:9092"
 TOPIC_USER_ACTIONS = "user_actions"
 TOPIC_USER_PLAYLISTS = "user_playlists"
@@ -56,17 +51,13 @@ DEFAULT_PREFERENCES = {
     "disgust": ["Metal", "Rock"]
 }
 
-# -----------------------
 # Kafka producer
-# -----------------------
 producer = KafkaProducer(
     bootstrap_servers=KAFKA_BOOTSTRAP,
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
-# -----------------------
 # Spark setup
-# -----------------------
 spark = SparkSession.builder \
     .appName("SparkMoodPlaylistAggregateLearning") \
     .master("local[*]") \
@@ -79,9 +70,7 @@ spark.sparkContext.setLogLevel("WARN")
 os.makedirs(TRAINING_DATA_PATH, exist_ok=True)
 os.makedirs(ML_MODEL_PATH, exist_ok=True)
 
-# -----------------------
 # Aggregate Mood-Genre Learning System
-# -----------------------
 class GlobalMoodGenreRecommender:
     """
     Learns GLOBAL patterns: Which genres work best for each mood?
@@ -222,9 +211,7 @@ class GlobalMoodGenreRecommender:
 # Initialize recommender
 recommender = GlobalMoodGenreRecommender(spark)
 
-# -----------------------
 # YouTube search helper
-# -----------------------
 def youtube_search_tracks(mood, language="en", language_name="English", genre="Any Genre", limit=20):
     """Search YouTube videos"""
     if not mood:
@@ -284,9 +271,7 @@ def youtube_search_tracks(mood, language="en", language_name="English", genre="A
         print(f"YouTube error: {e}")
         return []
 
-# -----------------------
 # Kafka stream setup
-# -----------------------
 kafka_stream_df = spark.readStream.format("kafka") \
     .option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP) \
     .option("subscribe", TOPIC_USER_ACTIONS) \
@@ -325,9 +310,7 @@ actions_df = kafka_stream_df.select(
     col("payload.data.manual").alias("manual")
 )
 
-# -----------------------
 # Batch handler
-# -----------------------
 batch_counter = 0
 
 def handle_batch(batch_df, batch_id):
@@ -437,9 +420,7 @@ def handle_batch(batch_df, batch_id):
     
     print(f"\n{'='*70}\n")
 
-# -----------------------
 # Start streaming
-# -----------------------
 CHECKPOINT_DIR = r"C:\tmp\spark\mood_aggregate_ckpt"
 os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 
